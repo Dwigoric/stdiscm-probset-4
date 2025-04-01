@@ -50,6 +50,7 @@ dependencies {
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    implementation 'com.nimbusds:nimbus-jose-jwt:9.41.1'
 }
 
 test {
