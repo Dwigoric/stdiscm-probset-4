@@ -7,6 +7,8 @@ import { jwtVerify } from "npm:jose";
 import db from "./db.ts"
 await db.connect();
 
+import Course from "./model/Course.ts"
+
 const app = express();
 
 app.use(express.json());
@@ -39,8 +41,10 @@ app.use(async (req, res, next) => {
     }
 });
 
-app.get("/", (_req, res) => {
-    res.send("Welcome to the Dinosaur API!");
+app.get("/courselist", async (_req, res) => {
+    const courseList = await Course.find();
+    if (!courseList) return res.status(404);
+    return res.status(200).json(courseList.map((course) => course.code));
 });
 
 app.listen(8041);
