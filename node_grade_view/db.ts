@@ -1,17 +1,12 @@
 import mongoose from "mongoose"
 
 class Database {
-	private db: mongoose.Connection
-
-	constructor() {
-		this.db = mongoose.createConnection(Deno.env.get("MONGODB_URI") as string)
-	}
-
 	public connect() {
-		this.db.on("error", console.error.bind(console, "MongoDB connection error:"))
-		this.db.once("open", () => {
-			console.log("Connected to MongoDB")
-		})
+		if (!Deno.env.has("MONGODB_URI")) throw new Error("MONGODB_URI is not set")
+		if (mongoose.connection.readyState) throw new Error("Already connected to MongoDB")
+
+		console.log("Connecting to MongoDB...")
+		return mongoose.connect(Deno.env.get("MONGODB_URI") as string)
 	}
 }
 

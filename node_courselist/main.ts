@@ -4,7 +4,7 @@ import express from "express";
 import "jsr:@std/dotenv/load";
 
 import db from "./db.ts"
-db.connect();
+await db.connect();
 
 const app = express();
 
