@@ -47,20 +47,37 @@ app.post("/enroll/:course", async (req, res) => {
    
     const user = await User.findOne({ userId });
     if (!user) return res.status(404).send("User not found");
+    
     const courseCode = req.params.course;
-
     const course = await Course.findOne({ code: courseCode });
     if (!course) return res.status(404).send("Course not found");
 
-    // @ts-ignore: For populating courses
-    if (user.courses.includes(course._id)) {
-        return res.status(403).send("Already enrolled in this course");
-    }
+    if (user.courses.includes(course._id)) return res.status(403).send("Already enrolled in this course");
     
     user.courses.push(course._id);
     await user.save();
     
     return res.status(200).send("Enrolled successfully");
+});
+
+app.post("/unenroll/:course", async (req, res) => {
+    // @ts-ignore: For accessing userId and role
+    const { userId, role } = req;
+    if (role !== "student") return res.status(403).send("Forbidden");
+    
+    const user = await User.findOne({ userId });
+    if (!user) return res.status(404).send("User not found");
+    
+    const courseCode = req.params.course;
+    const course = await Course.findOne({ code: courseCode });
+    if (!course) return res.status(404).send("Course not found");
+
+    if (!user.courses.includes(course._id)) return res.status(403).send("Not enrolled in this course");
+    
+    user.courses = user.courses.filter((c) => c.toString() !== course._id.toString());
+    await user.save();
+    
+    return res.status(200).send("Unenrolled successfully");
 });
 
 app.listen(8042);
