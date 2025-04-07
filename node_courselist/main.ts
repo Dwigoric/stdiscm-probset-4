@@ -42,10 +42,19 @@ app.use(async (req, res, next) => {
 });
 
 app.get("/courselist", async (_req, res) => {
-    const courseList = await Course.find();
-    if (!courseList) return res.status(404);
-    return res.status(200).json(courseList.map((course) => course.code));
+    try {
+        const courseList = await Course.find();
+        if (!courseList || courseList.length === 0) return res.status(404).json({ message: "No courses available." });
+
+        return res.status(200).json(courseList.map((course) => ({
+            code: course.code,
+        })));
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Failed to fetch courses.' });
+    }
 });
+
 
 app.listen(8041);
 console.log(`Server is running on http://localhost:8041`);

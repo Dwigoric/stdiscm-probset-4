@@ -4,17 +4,28 @@
     <router-link to="/enroll" class="nav-link">Enroll</router-link>
     <router-link to="/grades" class="nav-link">Grades</router-link>
     <router-link to="/faculty-upload" class="nav-link">Faculty</router-link>
-    <button @click="logout" class="logout-btn">Logout</button>
+    
+    <!-- Conditional rendering based on token presence -->
+    <button v-if="isLoggedIn" @click="handleAuth" class="logout-btn">
+      Logout
+    </button>
   </nav>
 </template>
 
 <script setup>
 import { useRouter } from 'vue-router'
+import { ref, computed } from 'vue'
+
 const router = useRouter()
 
-const logout = () => {
-  localStorage.removeItem('token')
-  router.push('/')
+const isLoggedIn = computed(() => localStorage.getItem('token') !== null)
+
+const handleAuth = () => {
+  if (isLoggedIn.value) {
+    // Perform logout
+    localStorage.removeItem('token')
+    router.push('/')
+  }
 }
 </script>
 
@@ -30,7 +41,7 @@ const logout = () => {
   color: #ecf0f1;
   text-decoration: none;
   padding: 0.5rem 1rem;
-  margin-right: 1.5rem; /* Added space between links */
+  margin-right: 1.5rem;
   border-radius: 4px;
   transition: background-color 0.2s ease-in-out;
 }

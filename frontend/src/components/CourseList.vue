@@ -5,36 +5,42 @@
     <ul v-else>
       <li v-for="course in courses" :key="course.id" class="course-item">
         <div>
-          <strong>{{ course.code }}</strong> - {{ course.name }}
+          <strong>{{ course.code }}</strong> 
           <p>{{ course.description }}</p>
         </div>
-        <button @click="enroll(course.id)">Enroll</button>
       </li>
     </ul>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { defineProps } from 'vue'
 import axios from 'axios'
 
-const courses = ref([])
-
-onMounted(async () => {
-  try {
-    const response = await axios.get('http://your-api-node/courses')
-    courses.value = response.data
-  } catch (err) {
-    console.error('Failed to fetch courses:', err)
-  }
+const props = defineProps({
+  courses: Array,
 })
 
 const enroll = async (courseId) => {
   try {
-    await axios.post(`http://your-api-node/enroll`, { courseId })
-    alert('Enrollment successful!')
+    const token = localStorage.getItem('token')
+    if (!token) {
+      router.push('/')
+    }
+
+    const res = await axios.post('http://localhost:8041/enroll', { courseId }, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+
+    if (res.status === 200) {
+      alert('✅ Enrollment successful!')
+    } else {
+      alert('❌ Failed to enroll.')
+    }
   } catch (err) {
-    alert('Failed to enroll.')
+    alert('❌ Error enrolling in course.')
     console.error(err)
   }
 }
