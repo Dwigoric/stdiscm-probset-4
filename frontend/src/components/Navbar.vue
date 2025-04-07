@@ -24,7 +24,7 @@ const handleAuth = () => {
   if (isLoggedIn.value) {
     // Perform logout
     localStorage.removeItem('token')
-    router.push('/')
+    window.location.href = '/'
   }
 }
 </script>

@@ -12,7 +12,7 @@ onMounted(async () => {
   try {
     const token = localStorage.getItem('token')
     if (!token) {
-      router.push('/')
+      window.location.href = '/'
     }
 
     const res = await fetch('http://localhost:8041/courselist', {

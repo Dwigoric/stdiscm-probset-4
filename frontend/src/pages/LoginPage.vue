@@ -21,7 +21,7 @@ const login = async () => {
   }
 
   localStorage.setItem('token', data.token)
-  router.push('/courses')
+  window.location.href = '/courses'
 
   } catch (err) {
     alert(`❌ ${err.message}`)
