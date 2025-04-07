@@ -1,32 +1,41 @@
-<template>
-  <div class="login-page">
-    <h2>Login</h2>
-    <input v-model="email" placeholder="Email" />
-    <input v-model="password" type="password" placeholder="Password" />
-    <button @click="login">Login</button>
-  </div>
-</template>
-
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-const email = ref('')
+const userId = ref('')
 const password = ref('')
 const router = useRouter()
 
 const login = async () => {
   try {
-    const res = await fetch('<AUTH_NODE>/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email.value, password: password.value })
-    })
-    const data = await res.json()
-    localStorage.setItem('token', data.token)
-    router.push('/courses')
+    const res = await fetch('http://localhost:8040/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId: userId.value, password: password.value })
+  });
+
+  const data = await res.json()
+
+  if (!res.ok) {
+    throw new Error(data.message || 'Login failed')
+  }
+
+  localStorage.setItem('token', data.token)
+  router.push('/courses')
+
   } catch (err) {
-    alert('Login failed.')
+    alert(`❌ ${err.message}`)
   }
 }
 </script>
+
+
+<template>
+  <div class="login-page">
+    <h2>Login</h2>
+    <input v-model="userId" placeholder="User ID" />
+    <input v-model="password" type="password" placeholder="Password" />
+    <button @click="login">Login</button>
+  </div>
+</template>
+
