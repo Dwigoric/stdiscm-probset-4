@@ -66,4 +66,4 @@ app.post("/enroll/:course", async (req, res) => {
 });
 
 app.listen(8042);
-console.log(`Server is running on http://localhost:8042`);
+console.log(`[enroll @ 8042] Server is running on http://localhost:8042`);

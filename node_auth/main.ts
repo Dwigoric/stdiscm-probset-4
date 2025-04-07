@@ -36,4 +36,4 @@ app.post("/login", async (req, res) => {
 });
 
 app.listen(8040);
-console.log(`Server is running on http://localhost:8040`);
+console.log(`[auth @ 8040] Server is running on http://localhost:8040`);

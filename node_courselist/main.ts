@@ -57,4 +57,4 @@ app.get("/courselist", async (_req, res) => {
 
 
 app.listen(8041);
-console.log(`Server is running on http://localhost:8041`);
+console.log(`[courselist @ 8041] Server is running on http://localhost:8041`);

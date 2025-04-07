@@ -86,4 +86,4 @@ app.post("/post-grade", async (req, res) => {
 });
 
 app.listen(8044);
-console.log(`Server is running on http://localhost:8044`);
+console.log(`[grade_upload @ 8044] Server is running on http://localhost:8044`);

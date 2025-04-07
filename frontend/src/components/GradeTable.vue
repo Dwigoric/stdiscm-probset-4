@@ -1,4 +1,3 @@
-<!-- src/pages/GradeTable.vue -->
 <template>
   <div class="grade-table">
     <h2>Your Grades</h2>
@@ -11,10 +10,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="grade in grades" :key="grade.courseId">
-          <td>{{ grade.courseCode }}</td>
+        <tr v-for="grade in grades" :key="grade.course">
+          <td>{{ grade.course }}</td>
           <td>{{ grade.grade ?? 'N/A' }}</td>
-          <td>{{ grade.status }}</td>
+          <td>{{ grade.grade != null ? 'Completed' : 'Pending' }}</td>
         </tr>
       </tbody>
     </table>
@@ -23,17 +22,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import axios from 'axios'
-
-const grades = ref([])
-
-onMounted(async () => {
-  try {
-    const response = await axios.get('http://your-api-node/grades')
-    grades.value = response.data
-  } catch (err) {
-    console.error('Failed to fetch grades:', err)
+defineProps({
+  grades: {
+    type: Array,
+    required: true
   }
 })
 </script>
@@ -48,7 +40,8 @@ thead {
   background-color: #f0f0f0;
 }
 
-td, th {
+td,
+th {
   padding: 0.5em;
   border: 1px solid #ddd;
 }

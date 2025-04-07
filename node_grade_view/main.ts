@@ -62,4 +62,4 @@ app.get("/grades", async (req, res) => {
 });
 
 app.listen(8043);
-console.log(`Server is running on http://localhost:8043`);
+console.log(`[grade_view @ 8043] Server is running on http://localhost:8043`);
