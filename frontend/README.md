@@ -11,5 +11,3 @@ Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://
    `npm install`
 2. Run
    `npm run dev`
-
-# Backend
