@@ -47,7 +47,7 @@ app.post("/enroll/:course", async (req, res) => {
     const { userId, role } = req;
     if (role !== "student") return res.status(403).send("Forbidden");
    
-    const user = await User.findOne({ userId }).populate("courses").exec();
+    const user = await User.findOne({ userId });
     if (!user) return res.status(404).send("User not found");
     const courseCode = req.params.course;
 
@@ -56,7 +56,7 @@ app.post("/enroll/:course", async (req, res) => {
 
     // @ts-ignore: For populating courses
     if (user.courses.includes(course._id)) {
-        return res.status(400).send("Already enrolled in this course");
+        return res.status(403).send("Already enrolled in this course");
     }
     
     user.courses.push(course._id);
