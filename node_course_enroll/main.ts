@@ -51,13 +51,13 @@ app.post("/enroll/:course", async (req, res) => {
     if (!user) return res.status(404).send("User not found");
     const courseCode = req.params.course;
 
-    // @ts-ignore: For populating courses
-    if (user.courses.includes(courseCode)) {
-        return res.status(400).send("Already enrolled in this course");
-    }
-    
     const course = await Course.findOne({ code: courseCode });
     if (!course) return res.status(404).send("Course not found");
+
+    // @ts-ignore: For populating courses
+    if (user.courses.includes(course._id)) {
+        return res.status(400).send("Already enrolled in this course");
+    }
     
     user.courses.push(course._id);
     await user.save();
