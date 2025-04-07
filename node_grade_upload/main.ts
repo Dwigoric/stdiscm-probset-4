@@ -82,7 +82,7 @@ app.post("/post-grade", async (req, res) => {
     })
     
     if (!insertedGrade) return res.status(500).send("Failed to insert grade");
-    return res.status(200).send("Grade posted successfully");
+    return res.status(201).send("Grade posted successfully");
 });
 
 app.listen(8044);
