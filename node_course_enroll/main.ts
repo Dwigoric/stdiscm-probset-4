@@ -7,6 +7,9 @@ import db from "./db.ts"
 import { jwtVerify } from "npm:jose";
 await db.connect();
 
+import User from "./model/User.ts";
+import Course from "./model/Course.ts";
+
 const app = express();
 
 app.use(express.json());
@@ -39,8 +42,27 @@ app.use(async (req, res, next) => {
     }
 });
 
-app.get("/", (_req, res) => {
-    res.send("Welcome to the Dinosaur API!");
+app.post("/enroll/:course", async (req, res) => {
+    // @ts-ignore: For accessing userId and role
+    const { userId, role } = req;
+    if (role !== "student") return res.status(403).json({ message: "Forbidden" });
+   
+    const user = await User.findOne({ userId }).populate("courses").exec();
+    if (!user) return res.status(404).json({ message: "User not found" });
+    const courseCode = req.params.course;
+
+    // @ts-ignore: For populating courses
+    if (user.courses.includes(courseCode)) {
+        return res.status(400).json({ message: "Already enrolled in this course" });
+    }
+    
+    const course = await Course.findOne({ code: courseCode });
+    if (!course) return res.status(404).json({ message: "Course not found" });
+    
+    user.courses.push(course._id);
+    await user.save();
+    
+    return res.status(200).json({ message: "Enrolled successfully" });
 });
 
 app.listen(8042);
