@@ -1,5 +1,7 @@
 import { model, Schema } from "mongoose"
 
+import Course from "./Course.ts";
+
 const userSchema = new Schema({
 	userId: {
 		type: String,
@@ -18,6 +20,11 @@ const userSchema = new Schema({
 	role: {
 		type: String,
 		enum: ["faculty", "student"],
+	},
+	courses: {
+		type: [Schema.Types.ObjectId],
+		ref: Course,
+		default: [],
 	}
 }, {
 	timestamps: true,
