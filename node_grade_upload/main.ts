@@ -27,8 +27,6 @@ app.use(async (req, res, next) => {
         const verifyResult = await jwtVerify(token, secret);
         if (!verifyResult) return res.status(401);
         const payload = verifyResult.payload;
-        const userId = payload.userId;
-        const role = payload.role;
         if (!userId) return res.status(401);
         if (!role) return res.status(401);
 
@@ -44,10 +42,12 @@ app.use(async (req, res, next) => {
 });
 
 app.post("/post-grade", async (req, res) => {
-    // @ts-ignore: For unrecognized properties
-    const { userId, role, studentId, grade, courseCode } = req.body;
+    // @ts-ignore
+    const userId = req.userId;
+    // @ts-ignore
+    const role = req.role;
+    const { studentId, grade, courseCode } = req.body;
     if (role !== "faculty") return res.status(403).send("Unauthorized");
-    
     if (!grade || !courseCode || !studentId) return res.status(400).send("Missing at least one of required fields: studentId, grade, course");
     
     if (typeof grade !== "number") {

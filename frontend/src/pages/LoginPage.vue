@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 const userId = ref('')
@@ -21,7 +21,21 @@ const login = async () => {
   }
 
   localStorage.setItem('token', data.token)
-  window.location.href = '/courses'
+    const isLoggedIn = computed(() => localStorage.getItem('token') !== null)
+
+    const isFaculty = computed(() => {
+      const token = localStorage.getItem('token')
+      if (!token) return false
+      const payload = JSON.parse(atob(token.split('.')[1])) // Decode JWT token to get payload
+      return payload.role === 'faculty'
+    })
+
+  if (isFaculty.value) {
+    window.location.href = '/faculty-upload'
+  } else {
+    window.location.href = '/courses'
+  }
+  
 
   } catch (err) {
     alert(`❌ ${err.message}`)

@@ -6,18 +6,16 @@
         <tr>
           <th>Course</th>
           <th>Grade</th>
-          <th>Status</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="grade in grades" :key="grade.course">
           <td>{{ grade.course }}</td>
           <td>{{ grade.grade ?? 'N/A' }}</td>
-          <td>{{ grade.grade != null ? 'Completed' : 'Pending' }}</td>
         </tr>
       </tbody>
     </table>
-    <div v-else>No grades found.</div>
+    <div v-else class="no-grades">No grades found.</div>
   </div>
 </template>
 
@@ -31,18 +29,51 @@ defineProps({
 </script>
 
 <style scoped>
+.grade-table {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1rem;
+  font-family: 'Segoe UI', sans-serif;
+  color: #f0f0f0;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #f0f0f0;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
+  text-align: left;
+  font-size: 1rem;
+  background-color: transparent;
 }
 
 thead {
-  background-color: #f0f0f0;
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
-td,
+th,
+td {
+  padding: 0.75em 1em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 th {
-  padding: 0.5em;
-  border: 1px solid #ddd;
+  color: #ccc;
+  font-weight: 600;
+}
+
+tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.no-grades {
+  text-align: center;
+  padding: 1em;
+  color: #aaa;
+  font-style: italic;
 }
 </style>
