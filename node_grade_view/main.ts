@@ -45,12 +45,12 @@ app.use(async (req, res, next) => {
 app.get("/grades", async (req, res) => {
     // @ts-ignore: For getting role from the previous middleware
     const { userId, role } = req;
-    if (role !== "student") return res.status(403).json({ message: "Forbidden for this role" });
+    if (role !== "student") return res.status(403).send("Forbidden for this role");
 
     const user = await User.findOne({ userId });
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(404).send("User not found");
     const grades = await Grade.find({ student: user }).populate("course").exec();
-    if (!grades) return res.status(404).json({ message: "Grades not found" });
+    if (!grades) return res.status(404).send("Grades not found");
     
     return res.status(200).json({
         grades: grades.map(grade => ({

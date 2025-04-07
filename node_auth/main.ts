@@ -19,11 +19,11 @@ app.post("/login", async (req, res) => {
     
     const user = await User.findOne({ userId });
     if (!user) {
-        return res.status(401).json({ message: "Invalid credentials" });
+        return res.status(401).send("Invalid credentials");
     }
     const isValid = await verify(user.password, password);
     if (!isValid) {
-        return res.status(401).json({ message: "Invalid credentials" });
+        return res.status(401).send("Invalid credentials");
     }
     
     const token = await new SignJWT({ userId, role: user.role })
