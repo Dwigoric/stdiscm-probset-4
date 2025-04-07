@@ -15,6 +15,10 @@ const userSchema = new Schema({
 		default: Date.now,
 		immutable: true,
 	},
+	role: {
+		type: String,
+		enum: ["faculty", "student"],
+	}
 }, {
 	timestamps: true,
 })

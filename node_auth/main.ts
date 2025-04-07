@@ -26,7 +26,7 @@ app.post("/login", async (req, res) => {
         return res.status(401).json({ message: "Invalid credentials" });
     }
     
-    const token = await new SignJWT({ userId })
+    const token = await new SignJWT({ userId, role: user.role })
         .setProtectedHeader({ alg: "HS256" })
         .setIssuedAt()
         .setExpirationTime("2h")
