@@ -7,6 +7,10 @@ import db from "./db.ts"
 import { jwtVerify } from "npm:jose";
 await db.connect();
 
+import User from "./model/User.ts";
+import Course from "./model/Course.ts";
+import Grade from "./model/Grade.ts";
+
 const app = express();
 
 app.use(express.json());
@@ -39,8 +43,46 @@ app.use(async (req, res, next) => {
     }
 });
 
-app.get("/", (_req, res) => {
-    res.send("Welcome to the Dinosaur API!");
+app.post("/post-grade", async (req, res) => {
+    // @ts-ignore: For unrecognized properties
+    const { userId, role, studentId, grade, courseCode } = req.body;
+    if (role !== "faculty") return res.status(403).send("Unauthorized");
+    
+    if (!grade || !courseCode || !studentId) return res.status(400).send("Missing at least one of required fields: studentId, grade, course");
+    
+    if (typeof grade !== "number") {
+        return res.status(400).send("Grade must be a number");
+    }
+    if (grade !== 0 && grade !== 1 && grade !== 1.5 && grade !== 2 && grade !== 2.5 && grade !== 3 && grade !== 3.5 && grade !== 4) {
+        return res.status(400).send("Invalid grade");
+    }
+    
+    if (typeof courseCode !== "string") {
+        return res.status(400).send("Course code must be a string");
+    }
+    if (typeof studentId !== "string") {
+        return res.status(400).send("Student ID must be a string");
+    }
+    
+    const instructor = await User.findOne({ userId });
+    if (!instructor) return res.status(404).send("Instructor not found");
+    
+    const course = await Course.findOne({ code: courseCode });
+    if (!course) return res.status(404).send("Course not found");
+    
+    const student = await User.findOne({ userId: studentId });
+    if (!student) return res.status(404).send("Student not found");
+    if (!student.courses.includes(course._id)) return res.status(400).send("Student not enrolled in this course");
+    
+    const insertedGrade = await Grade.insertOne({
+        student,
+        course,
+        grade,
+        instructor
+    })
+    
+    if (!insertedGrade) return res.status(500).send("Failed to insert grade");
+    return res.status(200).send("Grade posted successfully");
 });
 
 app.listen(8044);
