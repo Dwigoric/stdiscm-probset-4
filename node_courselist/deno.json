@@ -5,6 +5,7 @@
   "imports": {
     "@std/assert": "jsr:@std/assert@1",
     "express": "npm:express@^5.1.0",
+    "jose": "npm:jose@^6.0.10",
     "mongoose": "npm:mongoose@^8.13.2"
   }
 }
