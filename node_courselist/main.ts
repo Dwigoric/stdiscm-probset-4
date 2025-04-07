@@ -1,6 +1,10 @@
 // @ts-types="npm:@types/express@4.17.15"
 
 import express from "express";
+import "jsr:@std/dotenv/load";
+
+import db from "./db.ts"
+db.connect();
 
 const app = express();
 
