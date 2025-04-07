@@ -25,10 +25,10 @@ app.use(async (req, res, next) => {
     try {
         const secret = new TextEncoder().encode(Deno.env.get("JWT_SECRET"));
         const verifyResult = await jwtVerify(token, secret);
-        if (!verifyResult) return res.status(401);
-        const payload = verifyResult.payload;
-        if (!userId) return res.status(401);
-        if (!role) return res.status(401);
+        if (!verifyResult) return res.status(401).send("Invalid token");
+        const { userId, role } = verifyResult.payload;
+        if (!userId) return res.status(401).send("Invalid token");
+        if (!role) return res.status(401).send("Invalid token");
 
         // @ts-ignore: For passing userId to the next middleware
         req.userId = userId;
@@ -37,15 +37,13 @@ app.use(async (req, res, next) => {
         next();
     } catch (error) {
         console.error(error);
-        return res.status(403);
+        return res.status(401).send("Invalid token");
     }
 });
 
 app.post("/post-grade", async (req, res) => {
-    // @ts-ignore
-    const userId = req.userId;
-    // @ts-ignore
-    const role = req.role;
+    // @ts-ignore: For passing from the next middleware
+    const { userId, role } = req;
     const { studentId, grade, courseCode } = req.body;
     if (role !== "faculty") return res.status(403).send("Unauthorized");
     if (!grade || !courseCode || !studentId) return res.status(400).send("Missing at least one of required fields: studentId, grade, course");
@@ -69,6 +67,8 @@ app.post("/post-grade", async (req, res) => {
     
     const course = await Course.findOne({ code: courseCode });
     if (!course) return res.status(404).send("Course not found");
+    
+    if (!instructor.courses.includes(course._id)) return res.status(403).send("Instructor not assigned to this course");
     
     const student = await User.findOne({ userId: studentId });
     if (!student) return res.status(404).send("Student not found");
