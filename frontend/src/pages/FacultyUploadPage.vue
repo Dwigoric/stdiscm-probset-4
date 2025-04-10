@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 
 const courseCode = ref('')
 const studentId = ref('')
@@ -31,7 +31,7 @@ onMounted(async () => {
     return
   }
 
-  const res = await fetch('http://localhost:8041/courselist', {
+  const res = await fetch(`${import.meta.env.VITE_NODE_COURSELIST}/courselist`, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -56,21 +56,21 @@ const uploadGrade = async () => {
   console.log('Uploading grade:', {
     courseCode: courseCode.value,
     studentId: studentId.value,
-    grade: Number(grade.value)
+    grade: Number(grade.value),
   })
 
 
-  const response = await fetch('http://localhost:8044/post-grade', {
+  const response = await fetch(`${import.meta.env.VITE_NODE_UPLOADGRADE}/post-grade`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
       courseCode: courseCode.value,
       studentId: studentId.value,
-      grade: Number(grade.value)
-    })
+      grade: Number(grade.value),
+    }),
   })
 
   if (response.ok) {

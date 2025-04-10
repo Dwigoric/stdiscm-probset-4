@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const userId = ref('')
@@ -8,19 +8,19 @@ const router = useRouter()
 
 const login = async () => {
   try {
-    const res = await fetch('http://localhost:8040/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId: userId.value, password: password.value })
-  });
+    const res = await fetch(`${import.meta.env.VITE_NODE_AUTH}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: userId.value, password: password.value }),
+    })
 
-  const data = await res.json()
+    const data = await res.json()
 
-  if (!res.ok) {
-    throw new Error(data.message || 'Login failed')
-  }
+    if (!res.ok) {
+      throw new Error(data.message || 'Login failed')
+    }
 
-  localStorage.setItem('token', data.token)
+    localStorage.setItem('token', data.token)
     const isLoggedIn = computed(() => localStorage.getItem('token') !== null)
 
     const isFaculty = computed(() => {
@@ -30,12 +30,12 @@ const login = async () => {
       return payload.role === 'faculty'
     })
 
-  if (isFaculty.value) {
-    window.location.href = '/faculty-upload'
-  } else {
-    window.location.href = '/courses'
-  }
-  
+    if (isFaculty.value) {
+      window.location.href = '/faculty-upload'
+    } else {
+      window.location.href = '/courses'
+    }
+
 
   } catch (err) {
     alert(`❌ ${err.message}`)

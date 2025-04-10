@@ -19,8 +19,8 @@ onMounted(async () => {
       return
     }
 
-    const res = await fetch('http://localhost:8043/grades', {
-      headers: { Authorization: `Bearer ${token}` }
+    const res = await fetch(`${import.meta.env.VITE_NODE_VIEWGRADE}/grades`, {
+      headers: { Authorization: `Bearer ${token}` },
     })
 
     const data = await res.json()

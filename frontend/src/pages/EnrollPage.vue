@@ -25,7 +25,7 @@ onMounted(async () => {
       return
     }
 
-    const res = await fetch('http://localhost:8041/courselist', {
+    const res = await fetch(`${import.meta.env.VITE_NODE_COURSELIST}/courselist`, {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
@@ -46,17 +46,17 @@ const enroll = async (courseCode) => {
   try {
     const token = localStorage.getItem('token')
     if (!token) {
-      alert("You're not logged in.")
+      alert('You\'re not logged in.')
       return
     }
 
-    const res = await fetch(`http://localhost:8042/enroll/${courseCode}`, {
+    const res = await fetch(`${import.meta.env.VITE_NODE_ENROLL}/enroll/${courseCode}`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({}) // backend only needs param
+      body: JSON.stringify({}), // backend only needs param
     })
 
     if (!res.ok) {

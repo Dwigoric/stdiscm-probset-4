@@ -1,9 +1,9 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-const router = useRouter()
-
 import CourseList from '../components/CourseList.vue'
+
+const router = useRouter()
 
 const courses = ref([])
 const message = ref('')
@@ -15,13 +15,13 @@ onMounted(async () => {
       window.location.href = '/'
     }
 
-    const res = await fetch('http://localhost:8041/courselist', {
+    const res = await fetch(`${import.meta.env.VITE_NODE_COURSELIST}/courselist`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
       },
     })
-    
+
     if (!res.ok) {
       throw new Error('Failed to fetch courses')
     }

@@ -5,7 +5,7 @@
     <ul v-else>
       <li v-for="course in courses" :key="course.id" class="course-item">
         <div>
-          <strong>{{ course.code }}</strong> 
+          <strong>{{ course.code }}</strong>
           <p>{{ course.description }}</p>
         </div>
       </li>
@@ -28,7 +28,7 @@ const enroll = async (courseId) => {
       router.push('/')
     }
 
-    const res = await axios.post('http://localhost:8041/enroll', { courseId }, {
+    const res = await axios.post(`${import.meta.env.VITE_NODE_COURSELIST}/enroll`, { courseId }, {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
