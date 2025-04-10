@@ -4,6 +4,7 @@ import express from "npm:express"
 import "jsr:@std/dotenv/load"
 import { SignJWT } from "npm:jose"
 import { verify } from "npm:argon2";
+import cors from "npm:cors";
 
 import db from "./db.ts"
 await db.connect();
@@ -11,6 +12,12 @@ await db.connect();
 import User from "./model/User.ts"
 
 const app = express();
+
+app.use(cors({
+    origin: Deno.env.get("CORS_ORIGIN"),
+    methods: ["POST"],
+    allowedHeaders: ["Content-Type"],
+}))
 
 app.use(express.json());
 

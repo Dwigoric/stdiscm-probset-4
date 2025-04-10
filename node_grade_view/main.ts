@@ -2,15 +2,22 @@
 
 import express from "express";
 import "jsr:@std/dotenv/load";
+import { jwtVerify } from "npm:jose";
+import cors from "npm:cors";
 
 import db from "./db.ts"
-import { jwtVerify } from "npm:jose";
 await db.connect();
 
 import User from "./model/User.ts";
 import Grade from "./model/Grade.ts";
 
 const app = express();
+
+app.use(cors({
+    origin: Deno.env.get("CORS_ORIGIN"),
+    methods: ["GET"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+}))
 
 app.use(express.json());
 

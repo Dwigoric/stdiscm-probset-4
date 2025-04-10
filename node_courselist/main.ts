@@ -3,6 +3,7 @@
 import express from "express";
 import "jsr:@std/dotenv/load";
 import { jwtVerify } from "npm:jose";
+import cors from "npm:cors";
 
 import db from "./db.ts"
 await db.connect();
@@ -10,6 +11,12 @@ await db.connect();
 import Course from "./model/Course.ts"
 
 const app = express();
+
+app.use(cors({
+    origin: Deno.env.get("CORS_ORIGIN"),
+    methods: ["GET"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+}))
 
 app.use(express.json());
 

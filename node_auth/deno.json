@@ -5,6 +5,7 @@
   "imports": {
     "@std/assert": "jsr:@std/assert@1",
     "argon2": "npm:argon2@^0.41.1",
+    "cors": "npm:cors@^2.8.5",
     "express": "npm:express@^5.1.0",
     "jose": "npm:jose@^6.0.10",
     "mongoose": "npm:mongoose@^8.13.2"
