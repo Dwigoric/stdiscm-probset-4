@@ -4,6 +4,7 @@
     "jsr:@std/assert@1": "1.0.12",
     "jsr:@std/dotenv@*": "0.225.3",
     "jsr:@std/internal@^1.0.6": "1.0.6",
+    "npm:cors@*": "2.8.5",
     "npm:cors@^2.8.5": "2.8.5",
     "npm:express@^5.1.0": "5.1.0",
     "npm:jose@*": "6.0.10",

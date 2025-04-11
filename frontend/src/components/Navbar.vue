@@ -2,10 +2,16 @@
   <nav class="navbar">
     <router-link v-if="!isLoggedIn" to="/" class="nav-link">Home</router-link>
 
-    <router-link v-if="!isFaculty && isLoggedIn" to="/courses" class="nav-link">Courses</router-link>
-    <router-link v-if="!isFaculty && isLoggedIn" to="/enroll" class="nav-link">Enroll</router-link>
-    <router-link v-if="!isFaculty && isLoggedIn" to="/grades" class="nav-link">Grades</router-link>
-    <router-link v-if="isFaculty && isLoggedIn" to="/faculty-upload" class="nav-link">Faculty</router-link>
+    <!-- Student view -->
+    <router-link v-if="isStudent && isLoggedIn" to="/courses" class="nav-link">Courses</router-link>
+    <router-link v-if="isStudent && isLoggedIn" to="/enroll" class="nav-link">Enroll</router-link>
+    <router-link v-if="isStudent && isLoggedIn" to="/grades" class="nav-link">Grades</router-link>
+
+    <!-- Faculty view -->
+    <router-link v-if="isFaculty && isLoggedIn" to="/faculty-upload" class="nav-link">Upload Grades</router-link>
+
+    <!-- Admin view -->
+     <router-link v-if="isAdmin && isLoggedIn" to="/create-user" class="nav-link">Create user</router-link>
 
     <button v-if="isLoggedIn " @click="handleAuth" class="logout-btn">
       Logout
@@ -19,16 +25,22 @@ import { ref, computed } from 'vue'
 
 const router = useRouter()
 
-// Check if the user is logged in by checking the token
 const isLoggedIn = computed(() => localStorage.getItem('token') !== null)
 
-// Extract the user role from the JWT token stored in localStorage
-const isFaculty = computed(() => {
+const userRole = computed(() => {
   const token = localStorage.getItem('token')
-  if (!token) return false
-  const payload = JSON.parse(atob(token.split('.')[1])) // Decode JWT token to get payload
-  return payload.role === 'faculty'
+  if (!token) return null
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]))
+    return payload.role
+  } catch (e) {
+    return null
+  }
 })
+
+const isStudent = computed(() => userRole.value === 'student')
+const isFaculty = computed(() => userRole.value === 'faculty')
+const isAdmin = computed(() => userRole.value === 'admin')
 
 const handleAuth = () => {
   if (isLoggedIn.value) {

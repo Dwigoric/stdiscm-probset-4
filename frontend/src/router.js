@@ -4,6 +4,7 @@ import CoursePage from './pages/CoursePage.vue'
 import EnrollPage from './pages/EnrollPage.vue'
 import StudentGradesPage from './pages/StudentGradesPage.vue'
 import FacultyUploadPage from './pages/FacultyUploadPage.vue'
+import CreateUserPage from './pages/CreateUserPage.vue'
 
 const routes = [
     { path: '/', component: LoginPage },
@@ -11,6 +12,7 @@ const routes = [
     { path: '/enroll', component: EnrollPage },
     { path: '/grades', component: StudentGradesPage },
     { path: '/faculty-upload', component: FacultyUploadPage },
+    { path: '/create-user', component: CreateUserPage },
 ]
 
 export default createRouter({

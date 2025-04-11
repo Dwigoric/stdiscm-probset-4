@@ -18,7 +18,7 @@ deno run dev
 
 ## Run All at Once
 ```bash
-chmod +x run-all.sh
+chmod +x run-all.sh (for non-Window users)
 ./run-all.sh
 ```
 

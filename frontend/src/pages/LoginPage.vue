@@ -21,19 +21,30 @@ const login = async () => {
     }
 
     localStorage.setItem('token', data.token)
-    const isLoggedIn = computed(() => localStorage.getItem('token') !== null)
 
-    const isFaculty = computed(() => {
-      const token = localStorage.getItem('token')
-      if (!token) return false
-      const payload = JSON.parse(atob(token.split('.')[1])) // Decode JWT token to get payload
-      return payload.role === 'faculty'
-    })
+    const userRole = computed(() => {
+    const token = localStorage.getItem('token')
+    if (!token) return null
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]))
+      return payload.role
+    } catch (e) {
+      return null
+    }
+  })
+
+  const isStudent = computed(() => userRole.value === 'student')
+  const isFaculty = computed(() => userRole.value === 'faculty')
+  const isAdmin = computed(() => userRole.value === 'admin')
 
     if (isFaculty.value) {
       window.location.href = '/faculty-upload'
-    } else {
+    } else if (isStudent.value) {
       window.location.href = '/courses'
+    } else if (isAdmin.value) {
+      window.location.href = '/create-user'
+    } else {
+      window.location.href = '/'
     }
 
 
