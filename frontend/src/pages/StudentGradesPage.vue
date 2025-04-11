@@ -1,7 +1,16 @@
 <template>
   <div>
-    <GradeTable :grades="grades" />
+    <template v-if="message">
+      <div class="error-banner">{{ message }}</div>
+      <h2>My Grades</h2>
+    </template>
+    <template v-else>
+      <h2>My Grades</h2>
+      <GradeTable grades="grades" />
+    </template>
   </div>
+
+  
 </template>
 
 <script setup>
@@ -26,8 +35,19 @@ onMounted(async () => {
     const data = await res.json()
     grades.value = data.grades
   } catch (err) {
-    message.value = `❌ ${err.message}`
+    message.value = `⚠️ Service unavailable.`
     console.error(err)
   }
 })
 </script>
+
+<style scoped>
+.error-banner {
+  background-color: #ffcccc;
+  color: #b30000;
+  padding: 1em;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: 2px solid #b30000;
+}
+</style>

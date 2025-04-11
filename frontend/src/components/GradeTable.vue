@@ -1,6 +1,5 @@
 <template>
   <div class="grade-table">
-    <h2>Your Grades</h2>
     <table v-if="grades.length > 0">
       <thead>
         <tr>

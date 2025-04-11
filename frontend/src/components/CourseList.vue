@@ -1,6 +1,5 @@
 <template>
   <div class="course-list">
-    <h2>Available Courses</h2>
     <div v-if="courses.length === 0">No courses available.</div>
     <ul v-else>
       <li v-for="course in courses" :key="course.id" class="course-item">

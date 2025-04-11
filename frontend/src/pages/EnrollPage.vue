@@ -1,8 +1,12 @@
 <template>
   <div>
+    <!-- Service Down Banner -->
+    <div v-if="message" class="banner">
+      {{ message }}
+    </div>
+
     <h2>Enroll to Courses</h2>
-    <p v-if="message" style="color: red">{{ message }}</p>
-    <ul v-else class="course-list">
+    <ul v-if="!message" class="course-list">
       <li v-for="course in courses" :key="course._id">
         {{ course.code }}
         <button
@@ -55,10 +59,10 @@ onMounted(async () => {
 
     if (!resEnrolled.ok) throw new Error('Failed to fetch enrolled courses')
     const enrolledData = await resEnrolled.json()
-    enrolledCourses.value = enrolledData.map(c => c.code) // assuming each has a `code`
+    enrolledCourses.value = enrolledData.map(c => c.code)
 
   } catch (err) {
-    message.value = `❌ ${err.message}`
+    message.value = `⚠️ Service unavailable.`
   }
 })
 
@@ -85,7 +89,7 @@ const enroll = async (courseCode) => {
     }
 
     alert('✅ Enrolled successfully!')
-    enrolledCourses.value.push(courseCode) // Update local list to reflect the change
+    enrolledCourses.value.push(courseCode)
   } catch (err) {
     alert(`❌ ${err.message}`)
   }
@@ -109,5 +113,16 @@ button.enrolled {
   background-color: #ffdddd;
   color: red;
   cursor: not-allowed;
+}
+
+.banner {
+  background-color: #ffdddd;
+  color: #a94442;
+  padding: 1em;
+  border: 1px solid #a94442;
+  border-radius: 5px;
+  margin-bottom: 1em;
+  font-weight: bold;
+  text-align: center;
 }
 </style>

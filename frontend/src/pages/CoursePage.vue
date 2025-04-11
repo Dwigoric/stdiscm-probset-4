@@ -13,6 +13,7 @@ onMounted(async () => {
     const token = localStorage.getItem('token')
     if (!token) {
       window.location.href = '/'
+      return
     }
 
     const res = await fetch(`${import.meta.env.VITE_NODE_COURSELIST}/courselist`, {
@@ -28,16 +29,38 @@ onMounted(async () => {
 
     const data = await res.json()
     courses.value = data
-
   } catch (err) {
-    message.value = `❌ ${err.message}`
+    if (err.name === 'TypeError' && err.message === 'Failed to fetch') {
+      message.value = '⚠️ Service is down. Please try again later.'
+    } else {
+      message.value = `⚠️ Service unavailable.`
+    }
   }
 })
 </script>
 
 <template>
   <div>
-    <div v-if="message">{{ message }}</div>
-    <CourseList :courses="courses" />
+    <template v-if="message">
+      <div class="error-banner">{{ message }}</div>
+      <h2>Available Courses</h2>
+    </template>
+    <template v-else>
+      <h2>Available Courses</h2>
+      <CourseList :courses="courses" />
+    </template>
   </div>
 </template>
+
+
+
+<style scoped>
+.error-banner {
+  background-color: #ffcccc;
+  color: #b30000;
+  padding: 1em;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: 2px solid #b30000;
+}
+</style>

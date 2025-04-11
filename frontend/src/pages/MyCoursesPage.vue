@@ -1,8 +1,12 @@
 <template>
   <div>
+    <!-- Service Down Banner -->
+    <div v-if="message" class="banner">
+      {{ message }}
+    </div>
+
     <h2>My Enrolled Courses</h2>
-    <p v-if="message" style="color: red">{{ message }}</p>
-    <ul v-else class="course-list">
+    <ul v-if="!message" class="course-list">
       <li v-for="course in enrolledCourses" :key="course._id">
         {{ course.code }}
         <button @click="unenroll(course.code)">Unenroll</button>
@@ -36,7 +40,7 @@ const fetchEnrolled = async () => {
     const data = await res.json()
     enrolledCourses.value = data
   } catch (err) {
-    message.value = `❌ ${err.message}`
+    message.value = `⚠️ Service unavailable.`
   }
 }
 
@@ -65,9 +69,7 @@ const unenroll = async (courseCode) => {
   }
 }
 
-onMounted(async () => {
-  await fetchEnrolled()
-})
+onMounted(fetchEnrolled)
 </script>
 
 <style scoped>
@@ -81,5 +83,16 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.banner {
+  background-color: #ffdddd;
+  color: #a94442;
+  padding: 1em;
+  border: 1px solid #a94442;
+  border-radius: 5px;
+  margin-bottom: 1em;
+  font-weight: bold;
+  text-align: center;
 }
 </style>
