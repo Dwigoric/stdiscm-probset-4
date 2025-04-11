@@ -1,10 +1,8 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 const userId = ref('')
 const password = ref('')
-const router = useRouter()
 const message = ref('')
 const isError = ref(false)
 
