@@ -62,7 +62,7 @@ app.get("/courselist", async (_req, res) => {
 
 app.put("/create_course", async (req, res) => {
     // @ts-ignore: For passing role from the previous middleware
-    if (req.role !== "faculty") return res.status(403).send("Forbidden");
+    if (req.role !== "admin") return res.status(403).send("Forbidden");
     
     try {
         const { code, name, description } = req.body;
