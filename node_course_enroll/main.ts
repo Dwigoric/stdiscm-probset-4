@@ -23,18 +23,18 @@ app.use(express.json());
 
 app.use(async (req, res, next) => {
     const authHeader = req.headers["authorization"];
-    if (!authHeader) return res.status(401).send("No token provided");
+    if (!authHeader) return res.status(401).json({ message: "No token provided" });
 
     const token = authHeader.split(" ")[1];
-    if (!token) return res.status(401).send("No token provided");
+    if (!token) return res.status(401).json({ message: "No token provided" });
 
     try {
         const secret = new TextEncoder().encode(Deno.env.get("JWT_SECRET"));
         const verifyResult = await jwtVerify(token, secret);
-        if (!verifyResult) return res.status(401).send("Invalid token");
+        if (!verifyResult) return res.status(401).json({ message: "Invalid token" });
         const { userId, role } = verifyResult.payload;
-        if (!userId) return res.status(401).send("Invalid token");
-        if (!role) return res.status(401).send("Invalid token");
+        if (!userId) return res.status(401).json({ message: "Invalid token" });
+        if (!role) return res.status(401).json({ message: "Invalid token" });
 
         // @ts-ignore: For passing userId to the next middleware
         req.userId = userId;
@@ -43,48 +43,48 @@ app.use(async (req, res, next) => {
         next();
     } catch (error) {
         console.error(error);
-        return res.status(401).send("Invalid token");
+        return res.status(401).json({ message: "Invalid token" });
     }
 });
 
 app.post("/enroll/:course", async (req, res) => {
     // @ts-ignore: For accessing userId and role
     const { userId, role } = req;
-    if (role !== "student") return res.status(403).send("Forbidden");
+    if (role !== "student") return res.status(403).json({ message: "Forbidden" });
    
     const user = await User.findOne({ userId });
-    if (!user) return res.status(404).send("User not found");
+    if (!user) return res.status(404).json({ message: "User not found" });
     
     const courseCode = req.params.course;
     const course = await Course.findOne({ code: courseCode });
-    if (!course) return res.status(404).send("Course not found");
+    if (!course) return res.status(404).json({ message: "Course not found" });
 
-    if (user.courses.includes(course._id)) return res.status(403).send("Already enrolled in this course");
+    if (user.courses.includes(course._id)) return res.status(403).json({ message: "Already enrolled in this course" });
     
     user.courses.push(course._id);
     await user.save();
     
-    return res.status(200).send("Enrolled successfully");
+    return res.status(200).json({ message: "Enrolled successfully" });
 });
 
 app.post("/unenroll/:course", async (req, res) => {
     // @ts-ignore: For accessing userId and role
     const { userId, role } = req;
-    if (role !== "student") return res.status(403).send("Forbidden");
+    if (role !== "student") return res.status(403).json({ message: "Forbidden" });
     
     const user = await User.findOne({ userId });
-    if (!user) return res.status(404).send("User not found");
+    if (!user) return res.status(404).json({ message: "User not found" });
     
     const courseCode = req.params.course;
     const course = await Course.findOne({ code: courseCode });
-    if (!course) return res.status(404).send("Course not found");
+    if (!course) return res.status(404).json({ message: "Course not found" });
 
-    if (!user.courses.includes(course._id)) return res.status(403).send("Not enrolled in this course");
+    if (!user.courses.includes(course._id)) return res.status(403).json({ message: "Not enrolled in this course" });
     
     user.courses = user.courses.filter((c) => c.toString() !== course._id.toString());
     await user.save();
     
-    return res.status(200).send("Unenrolled successfully");
+    return res.status(200).json({ message: "Unenrolled successfully" });
 });
 
 app.listen(8042);

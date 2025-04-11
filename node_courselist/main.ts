@@ -22,18 +22,18 @@ app.use(express.json());
 
 app.use(async (req, res, next) => {
     const authHeader = req.headers["authorization"];
-    if (!authHeader) return res.status(401).send("No token provided");
+    if (!authHeader) return res.status(401).json({ message: "No token provided" });
 
     const token = authHeader.split(" ")[1];
-    if (!token) return res.status(401).send("No token provided");
+    if (!token) return res.status(401).json({ message: "No token provided" });
 
     try {
         const secret = new TextEncoder().encode(Deno.env.get("JWT_SECRET"));
         const verifyResult = await jwtVerify(token, secret);
-        if (!verifyResult) return res.status(401).send("Invalid token");
+        if (!verifyResult) return res.status(401).json({ message: "Invalid token" });
         const { userId, role } = verifyResult.payload;
-        if (!userId) return res.status(401).send("Invalid token");
-        if (!role) return res.status(401).send("Invalid token");
+        if (!userId) return res.status(401).json({ message: "Invalid token" });
+        if (!role) return res.status(401).json({ message: "Invalid token" });
 
         // @ts-ignore: For passing userId to the next middleware
         req.userId = userId;
@@ -42,7 +42,7 @@ app.use(async (req, res, next) => {
         next();
     } catch (error) {
         console.error(error);
-        return res.status(401).send("Invalid token");
+        return res.status(401).json({ message: "Invalid token" });
     }
 });
 
@@ -62,7 +62,7 @@ app.get("/courselist", async (_req, res) => {
 
 app.put("/create_course", async (req, res) => {
     // @ts-ignore: For passing role from the previous middleware
-    if (req.role !== "admin") return res.status(403).send("Forbidden");
+    if (req.role !== "admin") return res.status(403).json({ message: "Forbidden" });
     
     try {
         const { code, name, description } = req.body;
