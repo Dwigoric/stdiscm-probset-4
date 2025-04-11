@@ -3,7 +3,7 @@
 import express from "npm:express"
 import "jsr:@std/dotenv/load"
 import { SignJWT } from "npm:jose"
-import { verify } from "npm:argon2";
+import { verify, hash } from "npm:argon2";
 import cors from "npm:cors";
 
 import db from "./db.ts"
@@ -15,7 +15,7 @@ const app = express();
 
 app.use(cors({
     origin: Deno.env.get("CORS_ORIGIN"),
-    methods: ["POST"],
+    methods: ["POST", "PUT"],
     allowedHeaders: ["Content-Type"],
 }))
 
@@ -41,6 +41,30 @@ app.post("/login", async (req, res) => {
     
     return res.status(200).json({ token });
 });
+
+app.put("/create_user", async (req, res) => {
+    const { userId, password, role } = req.body;
+    
+    if (!["faculty", "student"].includes(role)) {
+        return res.status(400).send("Role must be either 'faculty' or 'student'");
+    }
+    
+    const existingUser = await User.findOne({ userId });
+    if (existingUser) {
+        return res.status(409).send("User already exists");
+    }
+    
+    const hashedPassword = await hash(password);
+    const user = new User({
+        userId,
+        password: hashedPassword,
+        role,
+    });
+    
+    await user.save();
+    
+    return res.status(201).send("User created successfully");
+})
 
 app.listen(8040);
 console.log(`[auth @ 8040] Server is running on http://localhost:8040`);
