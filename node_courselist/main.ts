@@ -14,7 +14,7 @@ const app = express();
 
 app.use(cors({
     origin: Deno.env.get("CORS_ORIGIN"),
-    methods: ["GET"],
+    methods: ["GET", "PUT"],
     allowedHeaders: ["Content-Type", "Authorization"],
 }))
 
@@ -56,10 +56,30 @@ app.get("/courselist", async (_req, res) => {
         })));
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ message: 'Failed to fetch courses.' });
+        return res.status(500).json({ message: "Failed to fetch courses." });
     }
 });
 
+app.put("/create_course", async (req, res) => {
+    // @ts-ignore: For passing role from the previous middleware
+    if (req.role !== "faculty") return res.status(403).send("Forbidden");
+    
+    try {
+        const { code, name, description } = req.body;
+        if (!code || !name || !description) return res.status(400).json({ message: "Missing required fields." });
+        
+        const existingCourse = await Course.findOne({ code });
+        if (existingCourse) return res.status(409).json({ message: "Course already exists." });
+
+        const course = new Course({ code, name, description });
+        await course.save();
+
+        return res.status(201).json({ message: "Course created successfully." });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Failed to create course." });
+    }
+})
 
 app.listen(8041);
 console.log(`[courselist @ 8041] Server is running on http://localhost:8041`);
