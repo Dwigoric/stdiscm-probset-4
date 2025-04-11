@@ -65,13 +65,13 @@ app.put("/create_course", async (req, res) => {
     if (req.role !== "admin") return res.status(403).json({ message: "Forbidden" });
     
     try {
-        const { code, name, description } = req.body;
-        if (!code || !name || !description) return res.status(400).json({ message: "Missing required fields." });
+        const { code } = req.body;
+        if (!code) return res.status(400).json({ message: "Course code is required." });
         
         const existingCourse = await Course.findOne({ code });
         if (existingCourse) return res.status(409).json({ message: "Course already exists." });
 
-        const course = new Course({ code, name, description });
+        const course = new Course({ code });
         await course.save();
 
         return res.status(201).json({ message: "Course created successfully." });

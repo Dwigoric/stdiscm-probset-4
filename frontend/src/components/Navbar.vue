@@ -12,7 +12,8 @@
     <router-link v-if="isFaculty && isLoggedIn" to="/faculty-upload" class="nav-link">Upload Grades</router-link>
 
     <!-- Admin view -->
-     <router-link v-if="isAdmin && isLoggedIn" to="/create-user" class="nav-link">Create user</router-link>
+    <router-link v-if="isAdmin && isLoggedIn" to="/create-user" class="nav-link">Create user</router-link>
+    <router-link v-if="isAdmin && isLoggedIn" to="/create-course" class="nav-link">Create course</router-link>
 
     <button v-if="isLoggedIn " @click="handleAuth" class="logout-btn">
       Logout
