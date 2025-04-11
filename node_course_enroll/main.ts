@@ -87,5 +87,17 @@ app.post("/unenroll/:course", async (req, res) => {
     return res.status(200).json({ message: "Unenrolled successfully" });
 });
 
+app.get("/enrolled", async (req, res) => {
+    // @ts-ignore
+    const { userId, role } = req;
+    if (role !== "student") return res.status(403).json({ message: "Forbidden" });
+
+    const user = await User.findOne({ userId }).populate("courses");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    return res.status(200).json(user.courses);
+});
+
+
 app.listen(8042);
 console.log(`[enroll @ 8042] Server is running on http://localhost:8042`);

@@ -5,7 +5,13 @@
     <ul v-else class="course-list">
       <li v-for="course in courses" :key="course._id">
         {{ course.code }}
-        <button @click="enroll(course.code)">Enroll</button>
+        <button
+          :disabled="isAlreadyEnrolled(course.code)"
+          :class="{ enrolled: isAlreadyEnrolled(course.code) }"
+          @click="enroll(course.code)"
+        >
+          {{ isAlreadyEnrolled(course.code) ? 'Enrolled' : 'Enroll' }}
+        </button>
       </li>
     </ul>
   </div>
@@ -15,28 +21,42 @@
 import { onMounted, ref } from 'vue'
 
 const courses = ref([])
+const enrolledCourses = ref([])
 const message = ref('')
+
+const isAlreadyEnrolled = (code) => {
+  return enrolledCourses.value.includes(code)
+}
 
 onMounted(async () => {
   try {
     const token = localStorage.getItem('token')
     if (!token) {
-      window.location.href = '/' // Redirect if not logged in
+      window.location.href = '/'
       return
     }
 
-    const res = await fetch(`${import.meta.env.VITE_NODE_COURSELIST}/courselist`, {
+    // Fetch all available courses
+    const resCourses = await fetch(`${import.meta.env.VITE_NODE_COURSELIST}/courselist`, {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
     })
 
-    if (!res.ok) {
-      throw new Error('Failed to fetch courses')
-    }
+    if (!resCourses.ok) throw new Error('Failed to fetch course list')
+    courses.value = await resCourses.json()
 
-    const data = await res.json()
-    courses.value = data
+    // Fetch user's enrolled courses
+    const resEnrolled = await fetch(`${import.meta.env.VITE_NODE_ENROLL}/enrolled`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+
+    if (!resEnrolled.ok) throw new Error('Failed to fetch enrolled courses')
+    const enrolledData = await resEnrolled.json()
+    enrolledCourses.value = enrolledData.map(c => c.code) // assuming each has a `code`
+
   } catch (err) {
     message.value = `❌ ${err.message}`
   }
@@ -56,7 +76,7 @@ const enroll = async (courseCode) => {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({}), // backend only needs param
+      body: JSON.stringify({}),
     })
 
     if (!res.ok) {
@@ -65,12 +85,12 @@ const enroll = async (courseCode) => {
     }
 
     alert('✅ Enrolled successfully!')
+    enrolledCourses.value.push(courseCode) // Update local list to reflect the change
   } catch (err) {
     alert(`❌ ${err.message}`)
   }
 }
 </script>
-
 
 <style scoped>
 .course-list {
@@ -83,5 +103,11 @@ const enroll = async (courseCode) => {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+button.enrolled {
+  background-color: #ffdddd;
+  color: red;
+  cursor: not-allowed;
 }
 </style>

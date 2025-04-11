@@ -3,7 +3,8 @@
     <router-link v-if="!isLoggedIn" to="/" class="nav-link">Home</router-link>
 
     <!-- Student view -->
-    <router-link v-if="isStudent && isLoggedIn" to="/courses" class="nav-link">Courses</router-link>
+    <router-link v-if="isStudent && isLoggedIn" to="/courses" class="nav-link">All Courses</router-link>
+    <router-link v-if="isStudent && isLoggedIn" to="/my-courses" class="nav-link">My Courses</router-link>
     <router-link v-if="isStudent && isLoggedIn" to="/enroll" class="nav-link">Enroll</router-link>
     <router-link v-if="isStudent && isLoggedIn" to="/grades" class="nav-link">Grades</router-link>
 
