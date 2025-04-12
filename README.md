@@ -1,5 +1,7 @@
 # Enrollment System - Run Guide
 
+This project can be accessed on the [public deployment](https://stdiscm-probset-4.pages.dev/).
+
 ---
 ##  Run Individually
 
