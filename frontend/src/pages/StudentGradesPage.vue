@@ -6,18 +6,18 @@
     </template>
     <template v-else>
       <h2>My Grades</h2>
-      <GradeTable grades="grades" />
+      <GradeTable :grades="grades" />
     </template>
   </div>
 
-  
+
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import GradeTable from '../components/GradeTable.vue'
 
-const grades = ref([])
+const grades = reactive([])
 const message = ref('')
 
 onMounted(async () => {
@@ -33,7 +33,7 @@ onMounted(async () => {
     })
 
     const data = await res.json()
-    grades.value = data.grades
+    grades.push(...data.grades)
   } catch (err) {
     message.value = `⚠️ Service unavailable.`
     console.error(err)
