@@ -16,7 +16,7 @@ const app = express();
 app.use(cors({
     origin: Deno.env.get("CORS_ORIGIN"),
     methods: ["POST", "PUT"],
-    allowedHeaders: ["Content-Type"],
+    allowedHeaders: ["Content-Type", "Authorization"],
 }))
 
 app.use(express.json());
